@@ -1,0 +1,124 @@
+000 (980133.000.000) 2022-12-15 23:40:09 Job submitted from host: <130.199.48.37:9618?addrs=130.199.48.37-9618&alias=sphnx01.sdcc.bnl.gov&noUDP&sock=schedd_8570_6573>
+...
+001 (980133.000.000) 2022-12-16 06:55:43 Job executing on host: <130.199.200.84:9618?addrs=130.199.200.84-9618&noUDP&sock=18976_c391_3>
+...
+006 (980133.000.000) 2022-12-16 06:55:51 Image size of job updated: 76016
+	45  -  MemoryUsage of job (MB)
+	45260  -  ResidentSetSize of job (KB)
+...
+006 (980133.000.000) 2022-12-16 06:55:52 Image size of job updated: 76016
+	45  -  MemoryUsage of job (MB)
+	45276  -  ResidentSetSize of job (KB)
+...
+005 (980133.000.000) 2022-12-16 06:55:53 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :        0        1         1 
+	   Disk (KB)            :        2        2   3805118 
+	   Memory (MB)          :       45     1500      1536 
+	   xferslots            :                           0 
+...
+000 (980154.000.000) 2022-12-22 16:40:58 Job submitted from host: <130.199.48.37:9618?addrs=130.199.48.37-9618&alias=sphnx01.sdcc.bnl.gov&noUDP&sock=schedd_8570_6573>
+...
+001 (980154.000.000) 2022-12-22 16:41:29 Job executing on host: <130.199.157.150:9618?addrs=130.199.157.150-9618&noUDP&sock=299284_b511_3>
+...
+006 (980154.000.000) 2022-12-22 16:41:33 Image size of job updated: 64712
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (980154.000.000) 2022-12-22 16:41:33 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :        0        1         1 
+	   Disk (KB)            :        2        2  14337825 
+	   Memory (MB)          :        0     1500      1536 
+	   xferslots            :                           0 
+...
+000 (980155.000.000) 2022-12-22 16:44:29 Job submitted from host: <130.199.48.37:9618?addrs=130.199.48.37-9618&alias=sphnx01.sdcc.bnl.gov&noUDP&sock=schedd_8570_6573>
+...
+001 (980155.000.000) 2022-12-22 16:44:57 Job executing on host: <130.199.157.152:9618?addrs=130.199.157.152-9618&noUDP&sock=315457_41f3_3>
+...
+006 (980155.000.000) 2022-12-22 16:45:01 Image size of job updated: 545732
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (980155.000.000) 2022-12-22 16:45:01 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:01, Sys 0 00:00:02  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:01, Sys 0 00:00:02  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :        0        1         1 
+	   Disk (KB)            :        2        2  14337825 
+	   Memory (MB)          :        0     1500      1536 
+	   xferslots            :                           0 
+...
+000 (980156.000.000) 2022-12-22 16:46:56 Job submitted from host: <130.199.48.37:9618?addrs=130.199.48.37-9618&alias=sphnx01.sdcc.bnl.gov&noUDP&sock=schedd_8570_6573>
+...
+001 (980156.000.000) 2022-12-22 16:47:14 Job executing on host: <130.199.202.114:9618?addrs=130.199.202.114-9618&noUDP&sock=33914_73cd_3>
+...
+006 (980156.000.000) 2022-12-22 16:47:23 Image size of job updated: 57828
+	33  -  MemoryUsage of job (MB)
+	32936  -  ResidentSetSize of job (KB)
+...
+005 (980156.000.000) 2022-12-22 16:47:28 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:01, Sys 0 00:00:01  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:01, Sys 0 00:00:01  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :                 1         1 
+	   Disk (KB)            :        2        2   4811719 
+	   Memory (MB)          :       33     1500      1536 
+	   xferslots            :                           0 
+...
+000 (980157.000.000) 2022-12-22 17:00:43 Job submitted from host: <130.199.48.37:9618?addrs=130.199.48.37-9618&alias=sphnx01.sdcc.bnl.gov&noUDP&sock=schedd_8570_6573>
+...
+001 (980157.000.000) 2022-12-22 17:01:13 Job executing on host: <130.199.202.115:9618?addrs=130.199.202.115-9618&noUDP&sock=249670_80ac_3>
+...
+006 (980157.000.000) 2022-12-22 17:01:22 Image size of job updated: 171168
+	119  -  MemoryUsage of job (MB)
+	121316  -  ResidentSetSize of job (KB)
+...
+005 (980157.000.000) 2022-12-22 17:01:37 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:15, Sys 0 00:00:01  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:15, Sys 0 00:00:01  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :     0.08        1         1 
+	   Disk (KB)            :     2           2   4811819 
+	   Memory (MB)          :   119        1500      1536 
+	   xferslots            :                           0 
+...

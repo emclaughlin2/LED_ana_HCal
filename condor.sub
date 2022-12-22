@@ -1,0 +1,14 @@
++JobFlavour                   = "workday"
+transfer_input_files          = /sphenix/u/bseidlitz/work/comWF/ledAna4/hcalint/saHCal.sh
+Executable                    = saHCal.sh 
+GetEnv                        = True
+arguments                     = $ENV(FILES)
+Universe                      = vanilla
+Notification                  = Never
+Priority                      = +20
+Output                        = test.out
+Error                         = test.err
+Log                           = test.log
+
+
+Queue
