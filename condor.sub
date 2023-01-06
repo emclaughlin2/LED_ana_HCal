@@ -1,14 +1,14 @@
-+JobFlavour                   = "workday"
-transfer_input_files          = /sphenix/u/bseidlitz/work/comWF/ledAna4/hcalint/saHCal.sh
-Executable                    = saHCal.sh 
-GetEnv                        = True
-arguments                     = $ENV(FILES)
-Universe                      = vanilla
-Notification                  = Never
-Priority                      = +20
-Output                        = test.out
-Error                         = test.err
-Log                           = test.log
+#! /bin/bash
 
+[ -z "$1" ] && exit
 
-Queue
+[ -r "$1" ] || exit
+
+FILE=$(basename $1 .evt)
+echo $FILE
+
+condor_submit  transfer.job \
+    -a "Arguments = $1" \
+    -a "output = log/${FILE}.log" \
+    -a "error  = log/${FILE}.err"
+
