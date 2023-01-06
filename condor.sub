@@ -8,7 +8,9 @@ FILE=$(basename $1 .evt)
 echo $FILE
 
 condor_submit  transfer.job \
-    -a "Arguments = $1" \
-    -a "output = log/${FILE}.log" \
-    -a "error  = log/${FILE}.err"
+    -a "Executable = $PWD/saHCal.sh" \
+    -a "Initialdir = $PWD/" \
+    -a "Arguments  = $1" \
+    -a "output     = log/${FILE}.log" \
+    -a "error      = log/${FILE}.err"
 

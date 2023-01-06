@@ -1,4 +1,3 @@
-Executable     = /sphenix/u/bseidlitz/work/LED_ana_HCal/saHCal.sh 
 Universe       = vanilla
-Initialdir     = /sphenix/u/bseidlitz/work/LED_ana_HCal 
+GetEnv                        = True
 Queue
