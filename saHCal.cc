@@ -1,4 +1,4 @@
-
+#include <caloreco/CaloWaveformProcessing.h>
 #include <iostream>
 #include <pmonitor/pmonitor.h>
 #include "saHCal.h"
@@ -10,9 +10,10 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <sstream> 
+#include <sstream>
 
 
+CaloWaveformProcessing* WaveformProcessing = nullptr;
 int init_done = 0;
 int fit_init_done = 0;
 
@@ -26,35 +27,54 @@ const int numPacket  = 8;
 const int numChannel = 192;
 
 TH1F *hsig[numPacket][numChannel];
-double mean[numPacket][numChannel]={0.0};
-double x2[numPacket][numChannel]={0.0};
+double mean[numPacket][numChannel] = {0.0};
+double x2[numPacket][numChannel] = {0.0};
 
 // need to improve signal extraction but this is a fine place holder
 double getSignal(Packet *p, const int channel)
 {
   double baseline = 0;
-  for ( int s = 0;  s< 3; s++) {
-      baseline += p->iValue(s,channel);
-    }
+  for ( int s = 0;  s < 3; s++) {
+    baseline += p->iValue(s, channel);
+  }
   baseline /= 3.;
 
   double signal = 0;
   float x = 0;
-  for ( int s = 3;  s< p->iValue(0,"SAMPLES"); s++) {
-      x++;
-      signal += p->iValue(s,channel) - baseline;
-    }
+  for ( int s = 3;  s < p->iValue(0, "SAMPLES"); s++) {
+    x++;
+    signal += p->iValue(s, channel) - baseline;
+  }
   signal /= x;
 
   return signal;
 }
 
+std::vector<float> anaWaveform(Packet* p, const int channel)
+{
+  std::vector<float> waveform;
+  for (int s = 0; s < p->iValue(0, "SAMPLES"); s++)
+  {
+    waveform.push_back(p->iValue(s, channel));
+  }
+  std::vector<std::vector<float>> multiple_wfs;
+  multiple_wfs.push_back(waveform);
+
+  std::vector<std::vector<float>> fitresults_ohcal;
+  fitresults_ohcal = WaveformProcessing->process_waveform(multiple_wfs);
+
+  std::vector<float> result;
+  result = fitresults_ohcal.at(0);
+
+  return result;
+}
+
 
 //return the index of the vertical tower
-int vertidx(int idx){
-  if(idx % 2  == 0) return idx + 1;
+int vertidx(int idx) {
+  if (idx % 2  == 0) return idx + 1;
 
-  if(idx % 2 == 1) return idx - 1;
+  if (idx % 2 == 1) return idx - 1;
 
   return -999;
 }
@@ -62,13 +82,16 @@ int vertidx(int idx){
 
 int pinit()
 {
-  cout << "initiallizing" <<endl;
+  WaveformProcessing = new CaloWaveformProcessing();
+  WaveformProcessing->set_processing_type(CaloWaveformProcessing::FAST);
+
+  cout << "initiallizing" << endl;
   char name[500];
-  for(int s=0; s<numPacket; s++){
-    for(int c=0; c<numChannel; c++){
-      sprintf(name,"signal_sec%d_ch%d",s,c);
-      hsig[s][c]=new TH1F(name,name,100,-100,100);
-      hsig[s][c]->StatOverflows(1); 
+  for (int s = 0; s < numPacket; s++) {
+    for (int c = 0; c < numChannel; c++) {
+      sprintf(name, "signal_sec%d_ch%d", s, c);
+      hsig[s][c] = new TH1F(name, name, 100, -100, 100);
+      hsig[s][c]->StatOverflows(1);
     }
   }
   return 0;
@@ -79,51 +102,54 @@ int process_event (Event * e)
 {
 
   if ( e->getEvtType() == 9)
-    {
-      return 0;
-    }
+  {
+    return 0;
+  }
 
   int returnval = 0;
 
   // data is ordered into packets, like looping over sectors
-  for (int packet=8001; packet<=8009; packet++) {
-    
+  for (int packet = 8001; packet <= 8009; packet++) {
+
     Packet *p = e->getPacket(packet);
     if (p)
+    {
+      int sect = packet - 8001; //packet to sector mapping
+      for ( int c = 0; c < p->iValue(0, "CHANNELS"); c++)
       {
-	int sect=packet-8001; //packet to sector mapping
-	for ( int c = 0; c < p->iValue(0,"CHANNELS"); c++)
-	  {
-	    double signal = getSignal(p,c);
-	    //cout << "c: " << c << " p: " << packet <<endl;    
-	    hsig[sect][c]->Fill(signal);
-	    mean[sect][c]=mean[sect][c]+signal;
-	    x2[sect][c] += signal*signal;
-	  } // channels
-	delete p;
-	nevt++;
-	
-      } // if p
+        //double signal = getSignal(p, c);
+        std::vector result = anaWaveform(p, c);
+        float signal = result.at(0);
+        //cout << "c: " << c << " p: " << packet <<endl;
+        hsig[sect][c]->Fill(signal);
+        mean[sect][c] = mean[sect][c] + signal;
+        x2[sect][c] += signal * signal;
+      } // channels
+
+      delete p;
+      
+
+    } // if p
   } // packet loop
-  
+  nevt++;
   return returnval;
 }
 
 int pclose()
 {
 
-  cout << "writing variables" <<endl;
-  cout << "entries: "<< hsig[3][3]->GetEntries()<<endl;
-  cout << "nevt: "<< nevt <<endl;
-  cout << "sector channel  mean" <<endl;
+  cout << "writing variables" << endl;
+  cout << "entries: " << hsig[3][3]->GetEntries() << endl;
+  cout << "nevt: " << nevt << endl;
+  cout << "sector channel  mean" << endl;
 
-  double stdev[numPacket][numChannel]={0.0};
+  //double stdev[numPacket][numChannel]={0.0};
 
-  for (int s=0; s<numPacket; s++){
-    for(int c=0; c<numChannel; c++){
+  for (int s = 0; s < numPacket; s++) {
+    for (int c = 0; c < numChannel; c++) {
       mean[s][c] /= nevt;
       x2[s][c] /= nevt;
-      stdev[s][c] = sqrt(x2[s][c] - pow(mean[s][c],2)); 
+      //stdev[s][c] = sqrt(x2[s][c] - pow(mean[s][c],2));
       cout << "packet " << s << "  channel "   << c << "  mean=" << mean[s][c] << " " <<  hsig[s][c]->GetMean() << endl;
       //cout << s << " " << c << "std  " << stdev[s][c] << endl;
     }

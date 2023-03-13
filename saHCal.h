@@ -14,6 +14,7 @@ int process_event (Event *e); //++CINT
 void set_threshold ( const int t);
 int get_threshold ();
 
+std::vector<float> anaWaveform(Packet* p, const int channel);
 //TH1F *hsig[48];
 
 
