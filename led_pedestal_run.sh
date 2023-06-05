@@ -91,14 +91,19 @@ get_file() {
 echo "Analyzing led run and logging in database"
 cd ~/bseidlitz/LED_ana_HCal/
 west_file=get_file(led_run_number,led,West)
+sh output_LED_status.sh west_file
 sh saHCal.sh west_file
 east_file=get_file(led_run_number,led,East)
+sh output_LED_status.sh east_file
 sh saHCal.sh east_file
 
 echo "Analyzing pedestal run and logging in database"
 west_file=get_file(pedestal_run_number,pedestal,West)
+sh output_LED_status.sh west_file
 sh saHCal.sh west_file
 east_file=get_file(pedestal_run_number,pedestal,East)
+sh output_LED_status.sh east_file
 sh saHCal.sh east_file
 
+echo "Completed analysis :)"
 
