@@ -1,4 +1,4 @@
-//#include <caloreco/CaloWaveformProcessing.h>
+#include <caloreco/CaloWaveformFitting.h>
 #include <iostream>
 #include <pmonitor/pmonitor.h>
 #include "saHCal.h"
@@ -9,11 +9,11 @@
 #include <odbc++/statement.h>  // for Statement
 #include <odbc++/types.h>
 
+#include <TH1.h>
+#include <TH2.h>
+#include <TF1.h>
+#include <TMath.h>
 
-//#include <TH1.h>
-//#include <TH2.h>
-//#include <TF1.h>
-//#include <TMath.h>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -27,9 +27,10 @@
 #include <map>
 #include <time.h>
 
-//CaloWaveformProcessing* WaveformProcessing = nullptr;
+CaloWaveformFitting* WaveformProcessing = nullptr;
 int init_done = 0;
 int fit_init_done = 0;
+bool include_signal_hist = false;
 
 using namespace std;
 
@@ -102,10 +103,10 @@ std::vector<float> anaWaveform(Packet* p, const int channel)
   multiple_wfs.push_back(waveform);
 
   std::vector<std::vector<float>> fitresults_ohcal;
-  //fitresults_ohcal = WaveformProcessing->process_waveform(multiple_wfs);
+  fitresults_ohcal = WaveformProcessing->calo_processing_fast(multiple_wfs);
 
-  std::vector<float> result= {5,5,5};
-  //result = fitresults_ohcal.at(0);
+  std::vector<float> result;
+  result = fitresults_ohcal.at(0);
 
   return result;
 }
@@ -290,21 +291,23 @@ int pinit()
     parse_led();
     parse_pindiode();
     parse_run_type();
-    //parse_hcal_db("ihcal_info.txt");
-    //parse_hcal_db("ohcal_info.txt");
 
-  //WaveformProcessing = new CaloWaveformProcessing();
-  //WaveformProcessing->set_processing_type(CaloWaveformProcessing::FAST);
-
-  //cout << "initiallizing" << endl;
-  //char name[500];
-  //for (int s = 0; s < numPacket; s++) {
-  //  for (int c = 0; c < numChannel; c++) {
-  //    sprintf(name, "signal_sec%d_ch%d", s, c);
-  //    hsig[s][c] = new TH1F(name, name, 100, -100, 100);
-  //    hsig[s][c]->StatOverflows(1);
-  //  }
-  //}
+    WaveformProcessing = new CaloWaveformFitting();
+    if (include_signal_hist) {
+      char o_name[500];
+      char i_name[500];
+      for (int s = 0; s < numPacket; s++) {
+        for (int c = 0; c < numChannel; c++) {
+          sprintf(o_name, "ohcal_signal_sec%d_ch%d", s, c);
+          hsig_ohcal[s][c] = new TH1F(o_name, o_name, 100, -100, 100);
+          hsig_ohcal[s][c]->StatOverflows(1);
+        
+          sprintf(i_name, "ihcal_signal_sec%d_ch%d", s, c);
+          hsig_ihcal[s][c] = new TH1F(i_name, i_name, 100, -100, 100);
+          hsig_ihcal[s][c]->StatOverflows(1);
+        }
+      }
+    }
   return 0;
 }
 
@@ -332,13 +335,11 @@ int process_event (Event * e)
     {
       int sect = packet - 8001; //packet to sector mapping
       packetExist[sect][0] = true;
-      for ( int c = 0; c < p->iValue(0, "CHANNELS"); c++)
-      {
-        std::vector<float> result = getSignal(p, c);
-        //std::vector<float> result = anaWaveform(p, c);
+      for ( int c = 0; c < p->iValue(0, "CHANNELS"); c++) {
+        //std::vector<float> result = getSignal(p, c);
+        std::vector<float> result = anaWaveform(p, c);
         float signal = result.at(0);
-        //cout << "c: " << c << " p: " << packet <<endl;
-        //hsig[sect][c]->Fill(signal);
+        if (include_signal_hist) hsig_ohcal[sect][c]->Fill(signal);
         mean[sect][c][0] += signal;
         x2[sect][c][0] += signal * signal;
       } // channels
@@ -354,8 +355,10 @@ int process_event (Event * e)
           int sect = packet - 7001;
           packetExist[sect][1] = true;
           for (int c = 0; c < p->iValue(0, "CHANNELS"); c++) {
-            std::vector<float> result = getSignal(p, c);
+            //std::vector<float> result = getSignal(p, c);
+            std::vector<float> result = anaWaveform(p, c);
             float signal = result.at(0);
+            if (include_signal_hist) hsig_ihcal[sect][c]->Fill(signal);
             mean[sect][c][1] += signal;
             x2[sect][c][1] += signal * signal;
           }
@@ -380,7 +383,7 @@ int pclose()
         }  
     }
   }
-
+  
   odbc::Connection *m_OdbcConnection = nullptr;
   //  Disconnect();
   int icount = 0;
@@ -400,8 +403,8 @@ int pclose()
   std::string sql = "INSERT INTO ";
   if (pedestal) { sql += "hcal_pedestal "; }
   else { sql += "hcal_led "; }
-  sql += "(run, time, detector, towerid, PinDiod_1, PinDiod_2, PinDiod_3, PinDiod_4, PinDiod_5, ";
-  sql += "LedPulseWidth_1, LedPulseWidth_2, LedPulseWidth_3, LedPulseWidth_4, LedPulseWidth_5, ";
+  sql += "(run, time, detector, towerid, PinDiode_1, PinDiode_2, PinDiode_3, PinDiode_4, PinDiode_5, ";
+  sql += "LedIntensity_1, LedIntensity_2, LedIntensity_3, LedIntensity_4, LedIntensity_5, ";
   if (pedestal) { sql += "pedestal_mean, pedestal_std) VALUES "; }
   else { sql += "led_mean, led_std) VALUES "; }
   for (int d = 0; d < numDetector; d++) {
@@ -432,6 +435,6 @@ int pclose()
   delete stmt;
 
   delete m_OdbcConnection;
-
+    
   return 0;
 }

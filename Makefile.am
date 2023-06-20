@@ -24,4 +24,6 @@ libsaHCal_la_SOURCES = \
 
 libsaHCal_la_LIBADD = \
   -L$(OPT_SPHENIX)/lib \
-  -lodbc++
+  -lodbc++ \
+  -lcalo_io \
+  -lcalo_reco
