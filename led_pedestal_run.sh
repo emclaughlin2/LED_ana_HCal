@@ -4,16 +4,16 @@ cat led_pedestal_run.sh > /home/phnxrc/operations/HCal/run_led_pedestal_script.t
 
 cd ~/operations/HCal
 
+bash rc_setup.sh
+
 export GTMHOST=gtm.sphenix.bnl.gov
 opc0="opc0.sphenix.bnl.gov"
 easthost="seb17.sphenix.bnl.gov"
 westhost="seb16.sphenix.bnl.gov"
 
 echo "Setup led runtype and scheduler"
-export RCDAQHOST=$westhost
-rcdaq_client daq_set_runtype led 
-RCDAQHOST=$easthost
-rcdaq_client daq_set_runtype led
+rc_client rc_set_runtype led
+
 gl1_gtm_client gtm_stop 9 
 gl1_gtm_client gtm_load_modebits 9 schedulers/led_running.scheduler
 gl1_gtm_client gtm_enable 9 
@@ -46,14 +46,13 @@ else
     exit
 fi
 sleep 18
-rc_client rc_end
-rc_client rc_close
+
 
 echo "Led run finished. Beginning pedestal run setup now"
 gl1_gtm_client gtm_stop 9
 gl1_gtm_client gtm_load_modebits 9 schedulers/silas_pedestal_new_test.scheduler
-gl1_gtm_client gtm_enable 9
-gl1_gtm_client gtm_set_accept_l1 9 0 
+#gl1_gtm_client gtm_enable 9
+#gl1_gtm_client gtm_set_accept_l1 9 0 
 
 echo "Setting detector settings for pedestal run"
 ssh $opc0 "python3 drichf1/control/test_pulse.py both all off; \
@@ -79,6 +78,9 @@ fi
 sleep 18
 rc_client rc_end
 rc_client rc_close
+
+rc_client rc_shutdown
+gl1_gtm_client gtm_set_mode 1
 
 get_file() {
     local n=$1

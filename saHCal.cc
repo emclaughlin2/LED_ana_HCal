@@ -403,8 +403,9 @@ int pclose()
   std::string sql = "INSERT INTO ";
   if (pedestal) { sql += "hcal_pedestal "; }
   else { sql += "hcal_led "; }
-  sql += "(run, time, detector, towerid, PinDiode_1, PinDiode_2, PinDiode_3, PinDiode_4, PinDiode_5, ";
-  sql += "LedIntensity_1, LedIntensity_2, LedIntensity_3, LedIntensity_4, LedIntensity_5, ";
+  sql += "(run, time, detector, towerid, ";
+  if (!missing_pin) sql += "PinDiode_1, PinDiode_2, PinDiode_3, PinDiode_4, PinDiode_5, ";
+  if (!missing_led) sql += "LedIntensity_1, LedIntensity_2, LedIntensity_3, LedIntensity_4, LedIntensity_5, ";
   if (pedestal) { sql += "pedestal_mean, pedestal_std) VALUES "; }
   else { sql += "led_mean, led_std) VALUES "; }
   for (int d = 0; d < numDetector; d++) {
@@ -413,10 +414,11 @@ int pclose()
           for (int c = 0; c < numChannel; c++) {
               int towerid = s * 192 + c;
               sql += "(" + std::to_string(run) + ", '" + timestampStr + "', " + std::to_string(d) + ", " + std::to_string(towerid) + ", ";
-              sql += std::to_string(pin_diode[towerid][5*d]) + ", " + std::to_string(pin_diode[towerid][5*d+1]) + ", " + std::to_string(pin_diode[towerid][5*d+2]) + ", ";
-              sql += std::to_string(pin_diode[towerid][5*d+3]) + ", " + std::to_string(pin_diode[towerid][5*d+4]) + ", " + std::to_string(led[towerid][5*d]) + ", ";
-              sql += std::to_string(led[towerid][5*d+1]) + ", " + std::to_string(led[towerid][5*d+2]) + ", " + std::to_string(led[towerid][5*d+3]) + ", ";
-              sql += std::to_string(led[towerid][5*d+4]) + ", " + std::to_string(mean[s][c][d]) + ", " + std::to_string(stdev[s][c][d]) + ")";
+              if (!missing_pin) sql += std::to_string(pin_diode[towerid][5*d]) + ", " + std::to_string(pin_diode[towerid][5*d+1]) + ", " + std::to_string(pin_diode[towerid][5*d+2]) + ", ";
+              if (!missing_pin) sql += std::to_string(pin_diode[towerid][5*d+3]) + ", " + std::to_string(pin_diode[towerid][5*d+4]) + ", ";
+              if (!missing_led) sql += std::to_string(led[towerid][5*d]) + ", " + std::to_string(led[towerid][5*d+1]) + ", " + std::to_string(led[towerid][5*d+2]) + ", ";
+              if (!missing_led) sql += std::to_string(led[towerid][5*d+3]) + ", " + std::to_string(led[towerid][5*d+4]) + ", ";
+              sql += std::to_string(mean[s][c][d]) + ", " + std::to_string(stdev[s][c][d]) + ")";
 
               if (d == 1 && s == 7 && c == 191) {
                 sql += "";
